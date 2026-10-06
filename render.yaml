@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: pharmsentinel-ai
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
