@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmSentinel AI - Automated Out-of-Stock Alert & Autonomous Restocking System</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Mermaid.js for Interactive System Architecture -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col">
+
+  <!-- ========================================================================= -->
+  <!-- Top Global Navigation Bar                                                 -->
+  <!-- ========================================================================= -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between">
+    <!-- Brand -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-xl font-bold">
+        🛡️
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-extrabold text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-indigo-300">
+            PharmSentinel <span class="text-cyan-400">AI</span>
+          </h1>
+          <span class="text-[10px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">
+            Agentic AI & Automation
+          </span>
+        </div>
+        <p class="text-xs text-slate-400">Autonomous Out-of-Stock Intelligence & Healthcare Restock Orchestrator</p>
+      </div>
+    </div>
+
+    <!-- Quick Controls & Actions -->
+    <div class="flex items-center gap-3">
+      <!-- Gemini API Config Button -->
+      <button id="apiKeyBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold transition" title="Configure Google Gemini API Key">
+        <span class="text-sm">✨</span>
+        <div id="apiKeyStatusBadge" class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span class="text-xs text-slate-300">Gemini Settings</span>
+        </div>
+      </button>
+
+      <!-- Audio Toggle -->
+      <button id="audioToggleBtn" class="p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-sm transition" title="Toggle Hospital Audio Chimes">
+        <span id="audioIcon">🔔</span>
+      </button>
+
+      <!-- Multi-Channel Notification Bell -->
+      <button id="alertBellBtn" class="relative p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-sm transition" title="View Dispatched Alerts Drawer">
+        <span>🚨</span>
+        <span id="alertBadgeCount" class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-bold font-mono hidden">0</span>
+      </button>
+
+      <!-- Ticker Toggle -->
+      <button id="tickerToggleBtn" class="px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 text-xs font-semibold transition">
+        ▶ Start Telemetry Ticker
+      </button>
+
+      <!-- Surge Simulation -->
+      <button id="simulateSurgeBtn" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white text-xs font-bold shadow-lg shadow-rose-900/40 transition">
+        ⚡ Simulate ER Surge
+      </button>
+
+      <!-- Run Full Multi-Agent Loop -->
+      <button id="runAgentLoopBtn" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-cyan-900/40 transition flex items-center gap-1.5">
+        <span>🤖</span>
+        <span>Run Agent Loop</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- Live Multi-Agent Pipeline Visualization Ribbon                            -->
+  <!-- ========================================================================= -->
+  <div class="bg-slate-900/70 border-b border-slate-800/80 px-6 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto">
+      <div class="flex items-center gap-2 text-xs font-mono text-slate-400 shrink-0">
+        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span>AGENTIC WORKFLOW PIPELINE:</span>
+      </div>
+
+      <div class="flex items-center gap-2 flex-1 justify-around min-w-[750px]">
+        <!-- Node 1: Sentinel -->
+        <div id="nodeSentinel" class="agent-node flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-950/60 text-xs">
+          <span class="text-base">🛡️</span>
+          <div>
+            <div class="font-bold text-slate-200">1. Sentinel Agent</div>
+            <div class="text-[10px] text-cyan-400 font-mono">Telemetry & Depletion</div>
+          </div>
+        </div>
+
+        <span class="text-slate-600 text-xs font-bold">➔</span>
+
+        <!-- Node 2: Forecaster -->
+        <div id="nodeForecaster" class="agent-node flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-950/60 text-xs">
+          <span class="text-base">🧠</span>
+          <div>
+            <div class="font-bold text-slate-200">2. Forecaster (Gemini)</div>
+            <div class="text-[10px] text-purple-400 font-mono">Dynamic EOQ & Surge</div>
+          </div>
+        </div>
+
+        <span class="text-slate-600 text-xs font-bold">➔</span>
+
+        <!-- Node 3: Sourcing -->
+        <div id="nodeSourcing" class="agent-node flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-950/60 text-xs">
+          <span class="text-base">🤝</span>
+          <div>
+            <div class="font-bold text-slate-200">3. Sourcing & Negotiator</div>
+            <div class="text-[10px] text-emerald-400 font-mono">Pharma SLA & Auto-PO</div>
+          </div>
+        </div>
+
+        <span class="text-slate-600 text-xs font-bold">➔</span>
+
+        <!-- Node 4: Alert Dispatch -->
+        <div id="nodeDispatch" class="agent-node flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-950/60 text-xs">
+          <span class="text-base">⚡</span>
+          <div>
+            <div class="font-bold text-slate-200">4. Dispatch & Alerts</div>
+            <div class="text-[10px] text-amber-400 font-mono">Omnichannel Broadcast</div>
+          </div>
+        </div>
+
+        <span class="text-slate-600 text-xs font-bold">➔</span>
+
+        <!-- Node 5: Supervisor -->
+        <div id="nodeSupervisor" class="agent-node active-node flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-950/60 text-xs">
+          <span class="text-base">👑</span>
+          <div>
+            <div class="font-bold text-slate-200">5. Supervisor (HITL)</div>
+            <div class="text-[10px] text-blue-400 font-mono">GxP Policy & Restock</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Navigation Tabs Bar                                                       -->
+  <!-- ========================================================================= -->
+  <div class="border-b border-slate-800/80 bg-slate-950/40 px-6">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 pt-2">
+      <button class="nav-tab-btn px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 bg-cyan-500/20 text-cyan-400 border-cyan-500/50 transition flex items-center gap-2" data-tab="dashboard">
+        <span>📊</span> Command Dashboard
+      </button>
+      <button class="nav-tab-btn px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 text-slate-400 border-transparent hover:text-slate-200 transition flex items-center gap-2" data-tab="agent-stream">
+        <span>🤖</span> Multi-Agent ReAct Stream
+      </button>
+      <button class="nav-tab-btn px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 text-slate-400 border-transparent hover:text-slate-200 transition flex items-center gap-2" data-tab="po-hub">
+        <span>📦</span> Purchase Orders & Sourcing Hub
+      </button>
+      <button class="nav-tab-btn px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 text-slate-400 border-transparent hover:text-slate-200 transition flex items-center gap-2" data-tab="prescription-ai">
+        <span>🏥</span> Clinical Rx Safety AI
+      </button>
+      <button class="nav-tab-btn px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 text-slate-400 border-transparent hover:text-slate-200 transition flex items-center gap-2" data-tab="architecture">
+        <span>📐</span> Architecture & Flowcharts
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Main Body Content                                                         -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- ======================================================================= -->
+    <!-- TAB 1: Command Dashboard                                               -->
+    <!-- ======================================================================= -->
+    <section id="tab-dashboard" class="tab-content-section space-y-6">
+      <!-- Live KPI Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <!-- KPI 1 -->
+        <div class="glass-panel p-4">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>Total Medicine SKUs</span>
+            <span>💊</span>
+          </div>
+          <div id="kpiTotalSKUs" class="text-2xl font-bold font-mono text-slate-100">12</div>
+          <div class="text-[10px] text-slate-500 mt-1">Across ICU, OT & Wards</div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="glass-panel p-4 border border-rose-500/30">
+          <div class="flex items-center justify-between text-rose-400 text-xs mb-1">
+            <span class="font-bold">OUT OF STOCK</span>
+            <span>🚨</span>
+          </div>
+          <div id="kpiOutOfStock" class="text-2xl font-bold font-mono text-rose-400">1</div>
+          <div class="text-[10px] text-rose-400/80 mt-1">Immediate PO required</div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="glass-panel p-4 border border-amber-500/30">
+          <div class="flex items-center justify-between text-amber-400 text-xs mb-1">
+            <span>Critical Low Risk</span>
+            <span>⚠️</span>
+          </div>
+          <div id="kpiCriticalLow" class="text-2xl font-bold font-mono text-amber-400">4</div>
+          <div class="text-[10px] text-amber-400/80 mt-1">&lt; 10 hrs runout time</div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="glass-panel p-4">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>Pending POs (HITL)</span>
+            <span>📑</span>
+          </div>
+          <div id="kpiPendingPOs" class="text-2xl font-bold font-mono text-cyan-400">0</div>
+          <div class="text-[10px] text-slate-500 mt-1">Awaiting pharmacist sign-off</div>
+        </div>
+
+        <!-- KPI 5 -->
+        <div class="glass-panel p-4">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>Cold-Chain Alerts</span>
+            <span>❄️</span>
+          </div>
+          <div id="kpiColdChainAlerts" class="text-2xl font-bold font-mono text-blue-400">1</div>
+          <div class="text-[10px] text-blue-400/80 mt-1">2-8°C Strict Biologicals</div>
+        </div>
+      </div>
+
+      <!-- Filter and Live Ticker Controls -->
+      <div class="glass-panel p-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-3 flex-1 min-w-[300px]">
+          <!-- Search input -->
+          <div class="relative flex-1 min-w-[200px]">
+            <input type="text" id="medicineSearchInput" placeholder="Search medicine, category, or generic name..." 
+              class="w-full pl-9 pr-3 py-2 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition">
+            <span class="absolute left-3 top-2.5 text-xs text-slate-500">🔍</span>
+          </div>
+
+          <!-- Category filter -->
+          <select id="categoryFilterSelect" class="bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500">
+            <option value="ALL">All Clinical Categories</option>
+            <option value="Emergency & Critical Care">Emergency & Critical Care</option>
+            <option value="Endocrinology / Diabetes">Endocrinology / Diabetes</option>
+            <option value="Anesthesia & Surgery">Anesthesia & Surgery</option>
+            <option value="Antibiotics & Infectious Diseases">Antibiotics & Infectious Diseases</option>
+            <option value="Antiviral / Specialty">Antiviral / Specialty</option>
+            <option value="Pulmonology & Respiratory">Pulmonology & Respiratory</option>
+            <option value="Cardiovascular & Hematology">Cardiovascular & Hematology</option>
+          </select>
+
+          <!-- Status filter -->
+          <select id="statusFilterSelect" class="bg-slate-900/80 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500">
+            <option value="ALL">All Stock Statuses</option>
+            <option value="OUT_OF_STOCK">🚨 Out of Stock Only</option>
+            <option value="CRITICAL_LOW">⚠️ Critical Low Only</option>
+            <option value="LOW">🟡 Low Stock</option>
+            <option value="HEALTHY">🟢 Healthy Stock</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Add SKU Button -->
+          <button id="openAddMedicineModalBtn" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-900/30 transition flex items-center gap-1.5">
+            <span>➕</span> Add Medicine SKU
+          </button>
+
+          <!-- Reset Default Stock Button -->
+          <button id="resetInventoryBtn" class="p-2 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-semibold transition" title="Reset to Hospital Default Inventory">
+            🔄
+          </button>
+
+          <div id="tickerStatusIndicator" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800">
+            <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+            <span class="text-xs text-slate-400">Ticker Paused</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medicine Inventory Grid -->
+      <div id="medicineGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Dynamically rendered medicine cards -->
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 2: Multi-Agent ReAct Stream                                        -->
+    <!-- ======================================================================= -->
+    <section id="tab-agent-stream" class="tab-content-section hidden space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <span>🧠</span> Real-Time Multi-Agent Reasoning & ReAct Stream
+          </h2>
+          <p class="text-xs text-slate-400">Live inspection of agent thoughts, decisions, prompt reasoning, and observations.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="exportTracesJsonBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+            💾 Export JSON
+          </button>
+          <button id="exportTracesCsvBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+            📄 Export CSV
+          </button>
+          <button id="clearTracesBtn" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-xs font-semibold rounded-lg border border-rose-500/30 transition">
+            🗑️ Clear Traces
+          </button>
+        </div>
+      </div>
+
+      <div id="thoughtStreamContainer" class="space-y-3">
+        <!-- Rendered thought traces -->
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 3: Purchase Orders & Sourcing Hub                                  -->
+    <!-- ======================================================================= -->
+    <section id="tab-po-hub" class="tab-content-section hidden space-y-6">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <span>📦</span> Autonomous Purchase Orders & Supplier Matrix
+          </h2>
+          <p class="text-xs text-slate-400">Autonomous GxP purchase orders drafted by Sourcing Agent with HITL Governance.</p>
+        </div>
+
+        <!-- Auto-Pilot Governance Toggle -->
+        <div class="glass-panel px-4 py-2 flex items-center gap-3">
+          <div class="text-xs">
+            <span class="font-bold text-slate-200">Auto-Pilot Restock:</span>
+            <span class="text-slate-400 ml-1">Threshold: &le; $2,500</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="autoPilotToggle" checked class="sr-only peer">
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- PO Table -->
+      <div class="glass-panel overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900/80 border-b border-slate-800 text-xs font-mono text-slate-400">
+                <th class="py-3 px-4">PO Number</th>
+                <th class="py-3 px-4">Medicine Item</th>
+                <th class="py-3 px-4">Distributor & SLA</th>
+                <th class="py-3 px-4">Total Cost</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">Created At</th>
+                <th class="py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="poTableBody">
+              <!-- Dynamically rendered PO rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Supplier Directory Matrix -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-bold text-slate-300 font-mono uppercase tracking-wider">Certified Pharma Supplier Network</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass-panel p-4 border border-slate-800">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-200 text-sm">Apex Healthcare</span>
+              <span class="text-xs text-emerald-400 font-mono">98.4% Rel.</span>
+            </div>
+            <div class="text-xs text-slate-400">SLA: 6 hrs (3h Emergency)</div>
+            <div class="text-xs text-slate-400 mt-1">Cold Chain: <span class="text-emerald-400">✓ Certified</span></div>
+            <div class="text-[11px] text-cyan-400 font-mono mt-2">Specialty: Critical Care & ER</div>
+          </div>
+
+          <div class="glass-panel p-4 border border-slate-800">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-200 text-sm">BioPharma ColdChain</span>
+              <span class="text-xs text-emerald-400 font-mono">99.1% Rel.</span>
+            </div>
+            <div class="text-xs text-slate-400">SLA: 10 hrs (5h Emergency)</div>
+            <div class="text-xs text-slate-400 mt-1">Cold Chain: <span class="text-emerald-400">✓ 2-8°C Refrigerated</span></div>
+            <div class="text-[11px] text-cyan-400 font-mono mt-2">Specialty: Insulin & Biologics</div>
+          </div>
+
+          <div class="glass-panel p-4 border border-slate-800">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-200 text-sm">SunMed National</span>
+              <span class="text-xs text-emerald-400 font-mono">94.7% Rel.</span>
+            </div>
+            <div class="text-xs text-slate-400">SLA: 18 hrs (8h Emergency)</div>
+            <div class="text-xs text-slate-400 mt-1">Cold Chain: <span class="text-slate-500">✗ Ambient Only</span></div>
+            <div class="text-[11px] text-cyan-400 font-mono mt-2">Specialty: High-Volume Antibiotics</div>
+          </div>
+
+          <div class="glass-panel p-4 border border-slate-800">
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-bold text-slate-200 text-sm">Novis Biologics Rx</span>
+              <span class="text-xs text-emerald-400 font-mono">96.8% Rel.</span>
+            </div>
+            <div class="text-xs text-slate-400">SLA: 14 hrs (6h Emergency)</div>
+            <div class="text-xs text-slate-400 mt-1">Cold Chain: <span class="text-emerald-400">✓ Certified</span></div>
+            <div class="text-[11px] text-cyan-400 font-mono mt-2">Specialty: Antiviral & Oncology</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 4: Clinical Prescription Safety AI                                 -->
+    <!-- ======================================================================= -->
+    <section id="tab-prescription-ai" class="tab-content-section hidden space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+          <span>🏥</span> Clinical Prescription Safety & Depletion Safeguard AI
+        </h2>
+        <p class="text-xs text-slate-400">Test doctor prescriptions in real-time against live pharmacy stock. If out of stock, AI recommends therapeutic alternatives and alerts staff.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Input Panel -->
+        <div class="glass-panel p-5 space-y-4">
+          <h3 class="text-sm font-bold text-slate-200 font-mono">Enter Doctor Prescription / Clinical Order</h3>
+
+          <div>
+            <textarea id="prescriptionInput" rows="4" placeholder="e.g. Rx: Remdesivir 100mg IV for Patient Ward 4B, Urgent administration required." 
+              class="w-full p-3 bg-slate-900/90 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono transition"></textarea>
+          </div>
+
+          <!-- Presets -->
+          <div class="space-y-2">
+            <span class="text-xs text-slate-400">Quick Test Scenarios:</span>
+            <div class="flex flex-wrap gap-2">
+              <button class="preset-prescription-btn px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition" data-text="Dr. Sarah prescribing 10 vials of Remdesivir 100mg for severe viral pneumonia admission.">
+                🔴 Remdesivir (Out of Stock Test)
+              </button>
+              <button class="preset-prescription-btn px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition" data-text="Emergency Crash Cart: 5 ampoules of Epinephrine 1:1000 for anaphylactic shock in Trauma Room 1.">
+                🟡 Epinephrine (Critical Low Test)
+              </button>
+              <button class="preset-prescription-btn px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition" data-text="Outpatient Clinic: 2 strips of Amoxicillin + Clavulanate 625mg PO for bacterial sinus infection.">
+                🟢 Amoxicillin (Healthy Stock Test)
+              </button>
+            </div>
+          </div>
+
+          <button id="runPrescriptionCheckBtn" class="w-full py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-900/30 transition">
+            🔍 Evaluate Prescription Safety & Live Stock Availability
+          </button>
+        </div>
+
+        <!-- Result Container -->
+        <div id="prescriptionResultContainer" class="space-y-4">
+          <div class="glass-panel p-8 text-center text-slate-500 text-xs">
+            Enter or select a prescription to run the clinical AI safety verification pipeline.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 5: Architecture & Flowcharts                                       -->
+    <!-- ======================================================================= -->
+    <section id="tab-architecture" class="tab-content-section hidden space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+          <span>📐</span> System Architecture & Agentic Workflow Design
+        </h2>
+        <p class="text-xs text-slate-400">Formal specifications for Agentic AI, mathematical inventory models, and multi-agent state machines.</p>
+      </div>
+
+      <!-- Mermaid Diagram Card -->
+      <div class="glass-panel p-6 space-y-4">
+        <h3 class="text-sm font-bold text-cyan-400 font-mono">1. Multi-Agent Collaborative Architecture Diagram</h3>
+        <div class="mermaid bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 overflow-x-auto text-xs">
+graph TD
+    subgraph SENSORS["1. Physical & Telemetry Layer"]
+        W1[ICU & Emergency Ward Stock] --> SEN[Sentinel Agent]
+        W2[Pharmacy RFID & Barcode Scanners] --> SEN
+        W3[Doctor Prescriptions Stream] --> RX[Clinical Safety AI]
+    end
+
+    subgraph AGENTS["2. Multi-Agent Reasoning Core (Google Gemini 1.5/2.0)"]
+        SEN -- "Depletion Event / Runout Risk" --> FOR[Demand Forecaster Agent]
+        FOR -- "Calculated EOQ & Surge Factor" --> SOU[Pharma Sourcing & Negotiator Agent]
+        SOU -- "Supplier Quotes & Draft PO" --> SUP[Supervisor Orchestrator]
+        SUP -- "Multi-Channel Escalation" --> DIS[Alert & Dispatch Agent]
+    end
+
+    subgraph ACTION["3. Automated Execution & HITL Layer"]
+        DIS --> C1[Intercom Audio Chimes]
+        DIS --> C2[Chief Medical Officer SMS]
+        DIS --> C3[Pharmacy Slack/Teams Bot]
+        SUP --> HITL{Human-In-The-Loop Approval Gate}
+        HITL -- "Cost <= $2500" --> AUTO[Auto-Pilot EDI Order Dispatch]
+        HITL -- "Cost > $2500 or Controlled Drug" --> MAN[Chief Pharmacist Manual Sign-off]
+        AUTO --> DIST[Pharma Distributor Logistics]
+        MAN --> DIST
+        DIST --> RESTOCK[Dock Receiving & Automated Ledger Replenish]
+    end
+
+    classDef agent fill:#0f172a,stroke:#06b6d4,stroke-width:2px,color:#f8fafc;
+    class SEN,FOR,SOU,DIS,SUP,RX agent;
+        </div>
+      </div>
+
+      <!-- Mathematical Models -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-panel p-5 space-y-3">
+          <h3 class="text-sm font-bold text-emerald-400 font-mono">2. Dynamic Reorder Point (ROP) Model</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            The Sentinel and Forecaster agents compute dynamic ROP based on variable lead times and demand spikes:
+          </p>
+          <div class="p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-xs text-cyan-300">
+            $$ROP = (D \times L) + SS$$<br>
+            $$SS = Z \times \sqrt{L \times \sigma_d^2 + D^2 \times \sigma_L^2}$$
+          </div>
+          <ul class="text-[11px] text-slate-400 space-y-1">
+            <li>• <strong class="text-slate-200">D</strong> = Average Hourly/Daily Medicine Consumption Rate</li>
+            <li>• <strong class="text-slate-200">L</strong> = Supplier Delivery Lead Time in Hours</li>
+            <li>• <strong class="text-slate-200">SS</strong> = Dynamic Safety Stock Buffer</li>
+            <li>• <strong class="text-slate-200">Z</strong> = Service Level Factor (99.5% for Life-Saving Drugs)</li>
+          </ul>
+        </div>
+
+        <div class="glass-panel p-5 space-y-3">
+          <h3 class="text-sm font-bold text-purple-400 font-mono">3. Agentic Economic Order Quantity (EOQ)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            The Sourcing Agent balances cold-chain holding cost against urgent replenishment ordering costs:
+          </p>
+          <div class="p-3 bg-slate-950/80 rounded-lg border border-slate-800 font-mono text-xs text-purple-300">
+            $$EOQ = \sqrt{\frac{2 \times D \times S}{H \times (1 - \text{Discount}_{\%})}}$$
+          </div>
+          <ul class="text-[11px] text-slate-400 space-y-1">
+            <li>• <strong class="text-slate-200">S</strong> = Emergency Order Setup & SLA Courier Fee</li>
+            <li>• <strong class="text-slate-200">H</strong> = Refrigerated / Secure Vault Holding Cost</li>
+            <li>• <strong class="text-slate-200">Discount%</strong> = Autonomous Volume Discount Tier (5% - 22%)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- Gemini API Key Configuration Modal                                       -->
+  <!-- ========================================================================= -->
+  <div id="apiKeyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel max-w-md w-full p-6 space-y-4 border border-slate-700 bg-slate-900 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✨</span>
+          <h3 class="font-bold text-slate-100 text-base">Google Gemini AI Settings</h3>
+        </div>
+        <button id="closeApiKeyModalBtn" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <p class="text-slate-300 leading-relaxed">
+          Enter your Google Gemini API key to enable live LLM multi-agent reasoning. If left empty, the project runs in built-in <strong>Intelligent Neural Simulation Mode</strong> with zero external dependencies.
+        </p>
+
+        <div>
+          <label class="block text-slate-400 font-medium mb-1">Gemini API Key:</label>
+          <input type="password" id="apiKeyInput" placeholder="AIzaSy..." class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono text-xs focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-slate-400 font-medium mb-1">Model Selection:</label>
+          <select id="modelSelect" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-xs focus:outline-none focus:border-cyan-500">
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Recommended - Ultra Fast)</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Clinical Reasoning)</option>
+          </select>
+        </div>
+
+        <div id="apiFeedback" class="text-xs min-h-[20px]"></div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+        <button id="testApiKeyBtn" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition">
+          🧪 Test Connection
+        </button>
+        <button id="saveApiKeyBtn" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition">
+          💾 Save Configuration
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Multi-Channel Notification Alert Slide-Out Drawer                        -->
+  <!-- ========================================================================= -->
+  <div id="alertDrawer" class="fixed top-0 right-0 w-full sm:w-96 h-full bg-slate-950/95 border-l border-slate-800 backdrop-blur-xl z-50 p-5 transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">🚨</span>
+        <h3 class="font-bold text-slate-100 text-sm">Dispatched Alerts Gateway</h3>
+      </div>
+      <button id="closeAlertDrawerBtn" class="text-slate-400 hover:text-white text-lg">✕</button>
+    </div>
+
+    <div id="alertDrawerList" class="flex-1 overflow-y-auto space-y-3">
+      <!-- Rendered alerts -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Stock Adjustment & Consumption Modal                                      -->
+  <!-- ========================================================================= -->
+  <div id="stockAdjustModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel max-w-lg w-full p-6 space-y-5 border border-slate-700 bg-slate-900 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <span id="adjustMedId" class="text-[11px] font-mono font-bold text-cyan-400">MED-001</span>
+          <h3 id="adjustMedName" class="font-bold text-slate-100 text-base">Epinephrine Injection (1:1000)</h3>
+        </div>
+        <button id="closeStockAdjustModalBtn" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <!-- Current Stock Status Header -->
+      <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-slate-400">Current Stock on Hand:</div>
+          <div class="flex items-baseline gap-1.5 mt-0.5">
+            <span id="adjustCurrentStockNum" class="text-2xl font-bold font-mono text-cyan-400">14</span>
+            <span id="adjustUnitLabel" class="text-xs font-mono text-slate-400">ampoules</span>
+            <span class="text-xs text-slate-500 font-mono">/ <span id="adjustMaxCapacityLabel">120</span> max</span>
+          </div>
+        </div>
+        <div id="adjustStatusBadge" class="px-3 py-1 text-xs font-mono font-bold rounded-full badge-critical">
+          CRITICAL LOW
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs text-slate-300 font-semibold">
+          <span>⚡ Quick Stock Actions:</span>
+          <span class="text-slate-500 text-[11px]">Click to immediately adjust</span>
+        </div>
+        
+        <div class="grid grid-cols-4 gap-2">
+          <!-- Consume options -->
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition" data-delta="-1">
+            -1 (Consume)
+          </button>
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition" data-delta="-5">
+            -5 (Consume)
+          </button>
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transition" data-delta="-10">
+            -10 (Consume)
+          </button>
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-rose-600/30 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-500/50 text-xs font-bold transition" data-delta="SET_ZERO">
+            Set to 0 🚨
+          </button>
+
+          <!-- Add / Restock options -->
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition" data-delta="1">
+            +1 (Add)
+          </button>
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition" data-delta="5">
+            +5 (Add)
+          </button>
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition" data-delta="10">
+            +10 (Add)
+          </button>
+          <button class="quick-step-btn py-2 px-2 rounded-lg bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 hover:text-white border border-emerald-500/50 text-xs font-bold transition" data-delta="FILL_MAX">
+            Fill Max 📦
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom Adjust / Direct Input -->
+      <div class="space-y-3 pt-2 border-t border-slate-800">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 text-xs font-medium mb-1">Set Exact Stock Level:</label>
+            <div class="flex items-center gap-1.5">
+              <input type="number" id="adjustExactStockInput" min="0" max="1000" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono text-sm focus:outline-none focus:border-cyan-500">
+              <button id="applyExactStockBtn" class="px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-lg transition shrink-0">
+                Apply
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 text-xs font-medium mb-1">Custom Add (+) / Consume (-):</label>
+            <div class="flex items-center gap-1.5">
+              <input type="number" id="adjustDeltaInput" placeholder="e.g. +25 or -8" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono text-sm focus:outline-none focus:border-cyan-500">
+              <button id="applyDeltaBtn" class="px-3 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg transition shrink-0">
+                Adjust
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 text-xs font-medium mb-1">Clinical Department / Reason for Log:</label>
+          <input type="text" id="adjustReasonInput" placeholder="e.g. ICU Crash Cart Dispense, Ward 4 Patient Influx, or Supplier Dock Inward" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-cyan-500">
+        </div>
+      </div>
+
+      <!-- Footer Action -->
+      <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+        <button id="deleteMedicineSkuBtn" class="px-3 py-2 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 text-xs font-bold rounded-lg transition flex items-center gap-1">
+          🗑️ Delete SKU
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button id="closeStockModalDoneBtn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg transition">
+            Close
+          </button>
+          <button id="triggerRestockFromModalBtn" class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold rounded-lg shadow-lg shadow-cyan-900/30 transition">
+            🤖 Run Agent Restock Cycle
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Add New Medicine SKU Modal                                               -->
+  <!-- ========================================================================= -->
+  <div id="addMedicineModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel max-w-xl w-full p-6 space-y-4 border border-slate-700 bg-slate-900 shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">💊</span>
+          <h3 class="font-bold text-slate-100 text-base">Add New Medicine to Hospital Inventory</h3>
+        </div>
+        <button id="closeAddMedicineModalBtn" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <form id="addMedicineForm" class="space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Medicine Name & Formulation *</label>
+            <input type="text" id="newMedName" required placeholder="e.g. Ceftriaxone Injection 1g" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Generic / Chemical Name *</label>
+            <input type="text" id="newMedGeneric" required placeholder="e.g. Ceftriaxone Sodium" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Clinical Category *</label>
+            <select id="newMedCategory" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-cyan-500">
+              <option value="Emergency & Critical Care">Emergency & Critical Care</option>
+              <option value="Antibiotics & Infectious Diseases">Antibiotics & Infectious Diseases</option>
+              <option value="Endocrinology / Diabetes">Endocrinology / Diabetes</option>
+              <option value="Anesthesia & Surgery">Anesthesia & Surgery</option>
+              <option value="Antiviral / Specialty">Antiviral / Specialty</option>
+              <option value="Pulmonology & Respiratory">Pulmonology & Respiratory</option>
+              <option value="Cardiovascular & Hematology">Cardiovascular & Hematology</option>
+              <option value="Analgesics & Antipyretics">Analgesics & Antipyretics</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Dosage Form & Packaging *</label>
+            <input type="text" id="newMedDosageForm" required placeholder="e.g. Lyophilized Vial" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Current Stock on Hand *</label>
+            <input type="number" id="newMedCurrentStock" required min="0" value="25" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Unit of Measure *</label>
+            <input type="text" id="newMedUnit" required placeholder="vials / ampoules / strips / bottles" value="vials" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Min Threshold (Low Stock Trigger) *</label>
+            <input type="number" id="newMedMinThreshold" required min="1" value="20" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Critical Threshold (Emergency Stockout) *</label>
+            <input type="number" id="newMedCriticalThreshold" required min="0" value="8" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Max Storage Capacity *</label>
+            <input type="number" id="newMedMaxCapacity" required min="10" value="100" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Avg Hourly Burn Rate (units/hr) *</label>
+            <input type="number" step="0.1" id="newMedBurnRate" required min="0.1" value="1.5" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Unit Price ($ USD) *</label>
+            <input type="number" step="0.01" id="newMedUnitPrice" required min="0.1" value="15.00" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Primary Supplier *</label>
+            <select id="newMedSupplier" class="w-full p-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-cyan-500">
+              <option value="SUP-01">Apex Healthcare Logistics (SLA 6h)</option>
+              <option value="SUP-02">BioPharma ColdChain Direct (SLA 10h)</option>
+              <option value="SUP-03">SunMed National Pharmaceuticals (SLA 18h)</option>
+              <option value="SUP-04">Novis Biologics Rx (SLA 14h)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 pt-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="newMedColdChain" class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0">
+            <span class="text-slate-300 font-semibold">❄️ Cold-Chain Required (2°C - 8°C Refrigerated)</span>
+          </label>
+
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="newMedDoctorAuth" checked class="rounded bg-slate-950 border-slate-800 text-cyan-500 focus:ring-0">
+            <span class="text-slate-300 font-semibold">🔒 Requires Doctor / HITL Auth</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+          <button type="button" id="cancelAddMedicineBtn" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold transition">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg font-bold shadow-lg shadow-emerald-900/40 transition">
+            ✓ Save & Register SKU
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-900 bg-slate-950/90 px-6 py-4 text-center text-xs text-slate-500">
+    PharmSentinel AI • Subject: Agentic AI & Automation • Architecture: Multi-Agent Clinical Inventory Watcher with Google Gemini
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data/medicines-database.js"></script>
+  <script src="js/data/suppliers-database.js"></script>
+  <script src="js/utils/audio-alerts.js"></script>
+  <script src="js/utils/export-utils.js"></script>
+  <script src="js/gemini-service.js"></script>
+  <script src="js/agents/inventory-sentinel-agent.js"></script>
+  <script src="js/agents/demand-forecaster-agent.js"></script>
+  <script src="js/agents/sourcing-negotiator-agent.js"></script>
+  <script src="js/agents/alert-dispatch-agent.js"></script>
+  <script src="js/agents/supervisor-orchestrator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

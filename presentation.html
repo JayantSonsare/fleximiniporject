@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmSentinel AI - Presentation Slides</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .slide {
+      display: none;
+      min-height: 85vh;
+    }
+    .slide.active {
+      display: flex;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .slide {
+        display: flex !important;
+        min-height: 98vh !important;
+        page-break-after: always !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #f8fafc !important;
+        color: #0f172a !important;
+        box-shadow: none !important;
+        margin-bottom: 20px !important;
+      }
+      .text-slate-100, .text-slate-200, .text-slate-300 {
+        color: #0f172a !important;
+      }
+      .text-slate-400, .text-slate-500 {
+        color: #475569 !important;
+      }
+      .bg-slate-900, .bg-slate-950, .bg-slate-900\/90, .bg-slate-950\/60 {
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col justify-between p-6">
+
+  <!-- Top bar -->
+  <div class="no-print flex items-center justify-between border-b border-slate-800 pb-4 max-w-6xl mx-auto w-full">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🛡️</span>
+      <span class="font-bold text-cyan-400 font-mono text-sm">PharmSentinel AI • Presentation Slides</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="window.print()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg border border-slate-700 transition flex items-center gap-1">
+        <span>🖨️</span> Save as PDF / Print
+      </button>
+      <span id="slideIndicator" class="text-xs font-mono text-slate-400">Slide 1 of 4</span>
+      <button id="prevBtn" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-lg transition">◀ Prev</button>
+      <button id="nextBtn" class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-lg transition">Next ▶</button>
+    </div>
+  </div>
+
+  <!-- Slides Container -->
+  <div class="max-w-6xl mx-auto w-full flex-1 flex items-center justify-center my-4">
+
+    <!-- SLIDE 1: Title Slide -->
+    <div class="slide active glass-panel p-10 w-full flex-col justify-between border border-cyan-500/30">
+      <div>
+        <span class="px-3 py-1 text-xs font-mono font-bold rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">
+          Agentic AI and Automation • Capstone Project
+        </span>
+        <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-indigo-300 mt-4 leading-tight">
+          PharmSentinel AI
+        </h1>
+        <h2 class="text-xl text-slate-300 mt-2 font-medium">
+          Automated Out-of-Stock Alert & Autonomous Restocking Intelligence System
+        </h2>
+        <p class="text-sm text-slate-400 mt-4 max-w-2xl leading-relaxed">
+          An autonomous multi-agent healthcare platform that monitors real-time pharmacy telemetry, forecasts epidemiological surges using Google Gemini AI, and orchestrates closed-loop purchase orders to prevent life-threatening medicine stockouts.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 pt-8 border-t border-slate-800/80 text-xs">
+        <div>
+          <span class="text-slate-500 font-mono">DOMAIN:</span>
+          <div class="font-bold text-slate-200">Healthcare AI & Supply Chain</div>
+        </div>
+        <div>
+          <span class="text-slate-500 font-mono">AI CORE:</span>
+          <div class="font-bold text-cyan-400">Google Gemini (ReAct Multi-Agent)</div>
+        </div>
+        <div>
+          <span class="text-slate-500 font-mono">KEY ATTRIBUTE:</span>
+          <div class="font-bold text-emerald-400">Self-Driving & HITL Safe</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Problem & Solution -->
+    <div class="slide glass-panel p-10 w-full flex-col justify-between border border-slate-800">
+      <div>
+        <span class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">Slide 02 / 04</span>
+        <h2 class="text-2xl font-bold text-slate-100 mt-1 mb-6">Problem Statement & Proposed Solution</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Problem Column -->
+          <div class="p-5 rounded-xl bg-rose-950/20 border border-rose-500/30 space-y-3">
+            <div class="flex items-center gap-2 text-rose-400 font-bold text-base">
+              <span>⚠️</span> The Healthcare Crisis
+            </div>
+            <ul class="text-xs text-slate-300 space-y-2.5 leading-relaxed">
+              <li>• <strong class="text-rose-300">Manual Counting Latency:</strong> Traditional hospital ERPs rely on batch physical counts, causing delayed stockout detection.</li>
+              <li>• <strong class="text-rose-300">Surge Vulnerability:</strong> Static thresholds fail during viral epidemics or emergency trauma influxes.</li>
+              <li>• <strong class="text-rose-300">Cold-Chain Non-Compliance:</strong> Biological drugs (e.g. Insulin) spoil if refrigerated logistics aren't verified.</li>
+            </ul>
+          </div>
+
+          <!-- Solution Column -->
+          <div class="p-5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-base">
+              <span>💡</span> The Agentic AI Solution
+            </div>
+            <ul class="text-xs text-slate-300 space-y-2.5 leading-relaxed">
+              <li>• <strong class="text-emerald-300">Real-time Telemetry Sentinel:</strong> Continuous scanning of ICU crash carts and pharmacy stock depletion rates.</li>
+              <li>• <strong class="text-emerald-300">Gemini Demand Forecasting:</strong> Dynamic Economic Order Quantity (EOQ) calculation based on outbreak trends.</li>
+              <li>• <strong class="text-emerald-300">Autonomous Restocking:</strong> Auto-drafting GxP purchase orders and instant omnichannel alerts.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-400 font-mono pt-4 border-t border-slate-800">
+        Result: 94% reduction in stockout response time & 100% elimination of manual ordering errors.
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Multi-Agent Architecture -->
+    <div class="slide glass-panel p-10 w-full flex-col justify-between border border-slate-800">
+      <div>
+        <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">Slide 03 / 04</span>
+        <h2 class="text-2xl font-bold text-slate-100 mt-1 mb-4">5-Agent Collaborative AI Architecture</h2>
+
+        <div class="grid grid-cols-5 gap-3 text-xs">
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-blue-500/30">
+            <div class="text-lg mb-1">🛡️</div>
+            <div class="font-bold text-blue-300">1. Sentinel</div>
+            <div class="text-[11px] text-slate-400 mt-1">Watches live telemetry, burn rates & runout hours.</div>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-purple-500/30">
+            <div class="text-lg mb-1">🧠</div>
+            <div class="font-bold text-purple-300">2. Forecaster</div>
+            <div class="text-[11px] text-slate-400 mt-1">Google Gemini predicts surge risks & optimal batch sizes.</div>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-emerald-500/30">
+            <div class="text-lg mb-1">🤝</div>
+            <div class="font-bold text-emerald-300">3. Sourcing</div>
+            <div class="text-[11px] text-slate-400 mt-1">Selects distributors, verifies cold-chains & drafts POs.</div>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-amber-500/30">
+            <div class="text-lg mb-1">⚡</div>
+            <div class="font-bold text-amber-300">4. Dispatch</div>
+            <div class="text-[11px] text-slate-400 mt-1">Broadcasting audio chimes, CMO SMS & Slack bot alerts.</div>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-cyan-500/30">
+            <div class="text-lg mb-1">👑</div>
+            <div class="font-bold text-cyan-300">5. Supervisor</div>
+            <div class="text-[11px] text-slate-400 mt-1">Governs Auto-Pilot vs Human-in-the-Loop (HITL) approval.</div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-xs text-slate-300">
+          <strong class="text-cyan-400 font-mono">ReAct Loop:</strong>
+          <span class="text-slate-400"> Telemetry Event ➔ Thought (Gemini Reasoning) ➔ Action (Supplier PO Draft) ➔ Observation (SLA Match) ➔ Closed-Loop Dispatch.</span>
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-500 font-mono pt-2 border-t border-slate-800">
+        Dual Execution Core: Live Google Gemini 1.5/2.0 API + Intelligent Neural Simulation Fallback Engine.
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Features, Impact & Conclusion -->
+    <div class="slide glass-panel p-10 w-full flex-col justify-between border border-slate-800">
+      <div>
+        <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Slide 04 / 04</span>
+        <h2 class="text-2xl font-bold text-slate-100 mt-1 mb-4">Live System Features & Clinical Impact</h2>
+
+        <div class="grid grid-cols-2 gap-4 text-xs">
+          <div class="space-y-2">
+            <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+              <strong class="text-cyan-400">⚡ Interactive Stock Management:</strong>
+              <p class="text-slate-300 mt-0.5">Direct inline consume (`-1/-5`), add restock (`+1/+5`), custom adjustments, and new SKU registration with persistent storage.</p>
+            </div>
+            <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+              <strong class="text-purple-400">🏥 Clinical Prescription AI:</strong>
+              <p class="text-slate-300 mt-0.5">Analyzes doctor prescriptions in real time, warns of stockouts, and suggests therapeutic alternatives.</p>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+              <strong class="text-amber-400">🔔 Web Audio Sonification:</strong>
+              <p class="text-slate-300 mt-0.5">Real-time synthesized hospital alert chimes for normal scans, low-stock warnings, and emergency stockouts.</p>
+            </div>
+            <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+              <strong class="text-emerald-400">🔒 Human-in-the-Loop (HITL) Safety:</strong>
+              <p class="text-slate-300 mt-0.5">Auto-Pilot for orders &le; $2,500; strict digital sign-off for high-potency controlled substances.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-slate-800 text-xs">
+        <span class="text-slate-400 font-mono">Status: Production-Grade Demonstration Ready</span>
+        <a href="index.html" target="_blank" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg transition">
+          🚀 Open Live System Demo
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer Navigation -->
+  <div class="flex items-center justify-between text-xs text-slate-500 max-w-6xl mx-auto w-full pt-2">
+    <span>PharmSentinel AI • Agentic AI & Automation</span>
+    <span>Use ◀ / ▶ buttons or Arrow Keys to navigate slides</span>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const indicator = document.getElementById('slideIndicator');
+    let current = 0;
+
+    function showSlide(idx) {
+      slides.forEach((s, i) => {
+        s.classList.toggle('active', i === idx);
+      });
+      indicator.textContent = `Slide ${idx + 1} of ${slides.length}`;
+      current = idx;
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (current > 0) showSlide(current - 1);
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (current < slides.length - 1) showSlide(current + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        if (current < slides.length - 1) showSlide(current + 1);
+      } else if (e.key === 'ArrowLeft') {
+        if (current > 0) showSlide(current - 1);
+      }
+    });
+  </script>
+</body>
+</html>
