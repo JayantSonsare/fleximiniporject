@@ -9,6 +9,27 @@ class GeminiService {
     this.apiKey = localStorage.getItem('PHARMSENTINEL_GEMINI_API_KEY') || '';
     this.modelName = localStorage.getItem('PHARMSENTINEL_GEMINI_MODEL') || 'gemini-1.5-flash';
     this.apiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
+    this.loadEnvDefaults();
+  }
+
+  async loadEnvDefaults() {
+    if (!this.apiKey) {
+      try {
+        const res = await fetch('env.json');
+        if (res.ok) {
+          const cfg = await res.json();
+          if (cfg.GEMINI_API_KEY && cfg.GEMINI_API_KEY.length > 10) {
+            this.apiKey = cfg.GEMINI_API_KEY.trim();
+            if (cfg.GEMINI_MODEL) this.modelName = cfg.GEMINI_MODEL;
+            if (typeof updateApiKeyStatus === 'function') {
+              updateApiKeyStatus();
+            }
+          }
+        }
+      } catch (_) {
+        // Silent fallback for direct file:// protocol or offline
+      }
+    }
   }
 
   setApiKey(key) {

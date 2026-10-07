@@ -3,8 +3,25 @@
 # Runs purely on built-in Windows .NET HttpListener without node/python!
 # =========================================================================
 
-$port = 8080
 $path = $PSScriptRoot
+$port = 8080
+
+# Load .env file if present
+$envFile = Join-Path $path ".env"
+if (Test-Path $envFile) {
+    Get-Content $envFile | ForEach-Object {
+        $line = $_.Trim()
+        if ($line -and -not $line.StartsWith("#") -and $line.Contains("=")) {
+            $parts = $line.Split("=", 2)
+            $varName = $parts[0].Trim()
+            $varVal = $parts[1].Trim().Trim('"').Trim("'")
+            [System.Environment]::SetEnvironmentVariable($varName, $varVal, "Process")
+        }
+    }
+    if ($env:PORT) {
+        $port = [int]$env:PORT
+    }
+}
 
 Write-Host "=========================================================================" -ForegroundColor Cyan
 Write-Host " PharmSentinel AI - Automated Out-of-Stock Alert & Restocking System" -ForegroundColor Green
@@ -29,6 +46,23 @@ try {
         $localPath = $request.Url.LocalPath.TrimStart('/')
         if ([string]::IsNullOrWhiteSpace($localPath)) {
             $localPath = "index.html"
+        }
+
+        # Dynamic environment configuration endpoint
+        if ($localPath -eq "env.json") {
+            $envObj = @{
+                GEMINI_API_KEY = if ($env:GEMINI_API_KEY) { $env:GEMINI_API_KEY } else { "" }
+                GEMINI_MODEL = if ($env:GEMINI_MODEL) { $env:GEMINI_MODEL } else { "gemini-1.5-flash" }
+                HOSPITAL_FACILITY_NAME = if ($env:HOSPITAL_FACILITY_NAME) { $env:HOSPITAL_FACILITY_NAME } else { "St. Jude Memorial Health System" }
+            }
+            $jsonString = $envObj | ConvertTo-Json
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($jsonString)
+            $response.ContentType = "application/json; charset=utf-8"
+            $response.ContentLength64 = $bytes.Length
+            $response.OutputStream.Write($bytes, 0, $bytes.Length)
+            $response.StatusCode = 200
+            $response.Close()
+            continue
         }
 
         $filePath = Join-Path $path $localPath
